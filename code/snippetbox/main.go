@@ -24,18 +24,14 @@ func snippetView(w http.ResponseWriter, r *http.Request) {
 
 // Add a snippetCreate handler function.
 func snippetCreate(w http.ResponseWriter, r *http.Request) {
-	// Use r.Method to check whether the request is using POST or not.
-	if r.Method != "POST" {
-		// Use the Header().Set() method to add an 'Allow: POST' header to the
-		// response header map. The first parameter is the header name, and
-		// the second parameter is the header value.
-		w.Header().Set("Allow", "POST")
-		w.WriteHeader(405)
-		w.Write([]byte("Method Not Allowed"))
+	if r.Method != http.MethodPost {
+		w.Header().Set("Allow", http.MethodPost)
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
 	w.Write([]byte("Create a new snippet..."))
 }
+
 func main() {
 	// Register the two new handler functions and corresponding URL patterns with
 	// the servemux, in exactly the same way that we did before.
